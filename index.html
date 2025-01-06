@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Расчет удельного сопротивления стекла</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: auto;
+            }
+
+            canvas {
+                margin-top: 20px;
+            }
+
+            input {
+                margin: 5px 0;
+                padding: 5px;
+                width: 100%;
+            }
+
+            button {
+                margin: 10px 0;
+                padding: 10px;
+                width: 100%;
+            }
+
+            .table-container {
+                max-width: 300px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 10px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            th {
+                background-color: #f4f4f4;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="table-container">
+            <h2>Результаты расчетов</h2>
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Температура (°C)</th>
+                        <th>Удельное сопротивление (Ом·см)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="container">
+            <h1>Расчет удельного сопротивления стекла</h1>
+            <label for="na2o">% Na₂O:</label>
+            <input type="number" id="na2o" placeholder="Введите % Na₂O (0-100)" />
+
+            <label for="k2o">% K₂O:</label>
+            <input type="number" id="k2o" placeholder="Введите % K₂O (0-100)" />
+
+            <label for="temp">Температура (°C):</label>
+            <input type="number" id="temp" placeholder="Введите температуру (°C)" />
+
+            <button onclick="plotGraph()">Построить график</button>
+
+            <canvas id="resistanceChart"></canvas>
+        </div>
+
+        <script>
+            let chartInstance = null; // Переменная для хранения экземпляра графика
+
+            function calculateResistance(na2o, k2o, temp) {
+                const na2oMol = parseFloat(na2o) || 0;
+                const k2oMol = parseFloat(k2o) || 0;
+                const temperature = parseFloat(temp) || 0;
+
+                if (na2oMol + k2oMol > 100) {
+                    alert('Суммарное содержание Na₂O и K₂O не должно превышать 100%.');
+                    return null;
+                }
+
+                const term1 = -1.508;
+                const term2 = 0.0204 * (na2oMol + (k2oMol / 2));
+                const term3 = (4836 - 128 * (na2oMol + (k2oMol / 2))) / (temperature + 273);
+
+                const logRho = term1 + term2 + term3;
+                const rho = Math.pow(10, logRho);
+
+                return rho;
+            }
+
+            function plotGraph() {
+                const na2o = document.getElementById('na2o').value;
+                const k2o = document.getElementById('k2o').value;
+                const temp = document.getElementById('temp').value;
+
+                const temperatures = [];
+                const resistances = [];
+                const tableBody = document.getElementById('resultsTable').querySelector('tbody');
+
+                tableBody.innerHTML = '';
+
+                for (let t = 1000; t <= 1700; t += 50) {
+                    const resistance = calculateResistance(na2o, k2o, t);
+                    if (resistance !== null) {
+                        temperatures.push(t);
+                        resistances.push(resistance);
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${t}</td><td>${resistance.toFixed(2)}</td>`;
+                        tableBody.appendChild(row);
+                    }
+                }
+
+                const ctx = document.getElementById('resistanceChart').getContext('2d');
+
+                // Уничтожаем существующий график, если он есть
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                // Создаем новый график
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: temperatures,
+                        datasets: [{
+                            label: 'Удельное сопротивление (Ом·см)',
+                            data: resistances,
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            fill: false,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                            },
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Температура (°C)',
+                                },
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Удельное сопротивление (Ом·см)',
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+        </script>
+    </body>
+
+</html>
