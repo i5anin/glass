@@ -30,28 +30,39 @@
               </div>
             </td>
           </tr>
+
+          <!-- Координаты электродов -->
           <tr>
             <td>Координаты электродов</td>
             <td>
-              <div v-for="(value, index) in furnace.electrodes.U" :key="'coord-' + index" class="d-flex gap-2">
-                <input v-model.number="furnace.electrodes.U[index]" type="number" class="form-control form-control-sm" />
+              <div v-for="(electrode, index) in furnace.electrodes" :key="'coord-' + index" class="d-flex gap-2 align-items-center">
+                <span>{{ index + 1 }}</span>
+                <input v-model.number="electrode.U" type="number" class="form-control form-control-sm" />
                 <span>м</span>
-                <input v-model.number="furnace.electrodes.V[index]" type="number" class="form-control form-control-sm" />
+                <input v-model.number="electrode.V" type="number" class="form-control form-control-sm" />
                 <span>м</span>
+                <button @click="removeElectrode(index)" class="btn btn-danger btn-sm">Удалить</button>
               </div>
+              <button @click="addElectrode" class="btn btn-primary btn-sm mt-2">Добавить электрод</button>
             </td>
           </tr>
+
+          <!-- Радиусы и длины (все на одной строке) -->
           <tr>
             <td>Радиусы и длины</td>
             <td>
-              <div v-for="(value, index) in furnace.electrodes.radii" :key="'radius-' + index" class="d-flex gap-2">
-                <input v-model.number="furnace.electrodes.radii[index]" type="number" class="form-control form-control-sm" />
-                <span>м</span>
-                <input v-model.number="furnace.electrodes.lengths[index]" type="number" class="form-control form-control-sm" />
-                <span>м</span>
+              <div class="d-flex gap-2">
+                <div v-for="(electrode, index) in furnace.electrodes" :key="'electrode-dim-' + index" class="d-flex gap-2">
+                  <input v-model.number="electrode.radii" type="number" class="form-control form-control-sm" />
+                  <span>м</span>
+                  <input v-model.number="electrode.lengths" type="number" class="form-control form-control-sm" />
+                  <span>м</span>
+                </div>
               </div>
             </td>
           </tr>
+
+          <!-- Электрические параметры -->
           <tr>
             <td>Электрические параметры</td>
             <td>
@@ -74,12 +85,12 @@
 
       <!-- Рисование расположения электродов -->
       <div class="w-50">
-        <svg width="70%" height="300">
-          <circle v-for="(value, index) in furnace.electrodes.U"
-                  :key="'electrode-' + index"
-                  :cx="furnace.electrodes.U[index] + 150"
-                  :cy="furnace.electrodes.V[index]"
-                  r="5" fill="blue" />
+        <svg width="100%" height="300">
+          <circle v-for="(electrode, index) in furnace.electrodes"
+                  :key="'electrode-circle-' + index"
+                  :cx="electrode.U * 3 + 150"
+          :cy="electrode.V * 2 + 150"
+          r="5" fill="blue" />
           <text x="10" y="10" font-size="16" fill="black">Расположение электродов</text>
         </svg>
       </div>
@@ -120,12 +131,20 @@ const furnace = reactive({
     height: 121.0,
     resistance: 0.300,
   },
-  electrodes: {
-    U: [-24.0, -8.0, 8.0, 24.0, -20.0, 20.0, -20.0, -10.0, -20.0, 20.0, 10.0, 20.0],
-    V: [70.0, 70.0, 70.0, 70.0, 116.0, 116.0, 35.0, 22.5, 10.0, 35.0, 22.5, 10.0],
-    radii: [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25],
-    lengths: [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
-  },
+  electrodes: [
+    { U: -24.0, V: 70.0, radii: 0.25, lengths: 5.0 },
+    { U: -8.0, V: 70.0, radii: 0.25, lengths: 5.0 },
+    { U: 8.0, V: 70.0, radii: 0.25, lengths: 5.0 },
+    { U: 24.0, V: 70.0, radii: 0.25, lengths: 5.0 },
+    { U: -20.0, V: 116.0, radii: 0.25, lengths: 5.0 },
+    { U: 20.0, V: 116.0, radii: 0.25, lengths: 5.0 },
+    { U: -20.0, V: 35.0, radii: 0.25, lengths: 5.0 },
+    { U: -10.0, V: 22.5, radii: 0.25, lengths: 5.0 },
+    { U: -20.0, V: 10.0, radii: 0.25, lengths: 5.0 },
+    { U: 20.0, V: 35.0, radii: 0.25, lengths: 5.0 },
+    { U: 10.0, V: 22.5, radii: 0.25, lengths: 5.0 },
+    { U: 20.0, V: 10.0, radii: 0.25, lengths: 5.0 },
+  ],
   electricParams: {
     groups: 7,
     initialVoltage: 100.0,
@@ -146,8 +165,8 @@ const furnace = reactive({
 });
 
 const solution = computed(() => {
-  const r = furnace.electrodes.radii[0];
-  const l = furnace.electrodes.lengths[0];
+  const r = furnace.electrodes[0].radii;
+  const l = furnace.electrodes[0].lengths;
   const electrodeVolume = Math.PI * r ** 2 * l;
 
   const P1 = -45.9 * -814;
@@ -160,6 +179,16 @@ const solution = computed(() => {
     totalPower: totalPower.toFixed(1),
   };
 });
+
+const addElectrode = () => {
+  furnace.electrodes.push({ U: 0, V: 0, radii: 0.25, lengths: 5.0 });
+};
+
+const removeElectrode = (index) => {
+  if (furnace.electrodes.length > 1) {
+    furnace.electrodes.splice(index, 1);
+  }
+};
 </script>
 
 <style scoped>
