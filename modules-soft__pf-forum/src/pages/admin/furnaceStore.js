@@ -58,13 +58,13 @@ export const useFurnaceStore = defineStore("furnace", () => {
     };
   });
 
-  // Отслеживание изменений в массиве `electrodes` и пересчёт результатов
+  // Отслеживание изменений в массиве `electrodes` и других параметрах
   watch(
-    () => furnace.electrodes.map((e) => ({ ...e })), // Глубокое наблюдение
+    furnace, // Отслеживаем весь объект
     () => {
       furnace.results.voltage.U0 = parseFloat(solution.value.U0);
     },
-    { immediate: true, deep: true }
+    { deep: true } // Глубокое отслеживание всех вложенных объектов
   );
 
   // Функция добавления электрода
