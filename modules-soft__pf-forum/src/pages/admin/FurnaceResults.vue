@@ -1,6 +1,5 @@
 <template>
   <div>
-    <pre>{{ solution }}</pre>
     <h3 class="mt-4">Результаты:</h3>
     <table class="table table-sm">
       <thead>
@@ -33,7 +32,8 @@
 V = Σ(π × r² × h)
 где r - радиус электрода, h - длина электрода.
 </pre>
-        <span><strong>Текущие данные:</strong> {{ furnace.electrodes.map(e => `r=${e.radius}, h=${e.length}`).join("; ") }}</span>
+        <span><strong>Текущие данные:</strong> {{ furnace.electrodes.map(e => `r=${e.radius}, h=${e.length}`).join('; ')
+          }}</span>
       </li>
       <li>
         <strong>Сопротивление:</strong>
@@ -41,7 +41,8 @@ V = Σ(π × r² × h)
 R = ρ × V
 где ρ - сопротивление материала, V - объем электродов.
 </pre>
-        <span><strong>Текущие данные:</strong> ρ={{ furnace.dimensions.resistance }}, V={{ solution.electrodeVolume }}</span>
+        <span><strong>Текущие данные:</strong> ρ={{ furnace.dimensions.resistance }}, V={{ solution.electrodeVolume
+          }}</span>
       </li>
       <li>
         <strong>Сила тока:</strong>
@@ -49,7 +50,8 @@ R = ρ × V
 I = P / U
 где P - мощность, U - начальное напряжение.
 </pre>
-        <span><strong>Текущие данные:</strong> P={{ furnace.electricParams.initialPower }}, U={{ furnace.electricParams.initialVoltage }}</span>
+        <span><strong>Текущие данные:</strong> P={{ furnace.electricParams.initialPower
+          }}, U={{ furnace.electricParams.initialVoltage }}</span>
       </li>
       <li>
         <strong>Результирующее напряжение:</strong>
@@ -57,7 +59,8 @@ I = P / U
 U₀ = I × R
 где I - сила тока, R - сопротивление.
 </pre>
-        <span><strong>Текущие данные:</strong> I={{ (furnace.electricParams.initialPower / furnace.electricParams.initialVoltage).toFixed(2) }}, R={{ (furnace.dimensions.resistance * solution.electrodeVolume).toFixed(6) }}</span>
+        <span><strong>Текущие данные:</strong> I={{ (furnace.electricParams.initialPower / furnace.electricParams.initialVoltage).toFixed(2)
+          }}, R={{ (furnace.dimensions.resistance * solution.electrodeVolume).toFixed(6) }}</span>
       </li>
       <li>
         <strong>Суммарная мощность:</strong>
@@ -74,7 +77,7 @@ P = Σ((U₀ / N) × (U₀ / N / R))
 <script setup>
 import { useFurnaceStore } from './furnaceStore'
 
-const { furnace, solution } = useFurnaceStore();
+const { furnace, solution } = useFurnaceStore()
 </script>
 
 <style scoped>
@@ -82,6 +85,7 @@ const { furnace, solution } = useFurnaceStore();
 .table th {
   vertical-align: middle;
 }
+
 pre {
   background: #f8f9fa;
   padding: 0.5em;

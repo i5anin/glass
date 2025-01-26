@@ -53,7 +53,6 @@
         </tbody>
       </table>
     </div>
-    <pre>{{furnace.electrodes}} </pre>
     <button @click="addElectrode" class="btn btn-sm btn-primary mt-2">Добавить электрод</button>
   </div>
 </template>
