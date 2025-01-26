@@ -1,0 +1,32 @@
+.form-floating > label {
+  left: 8px;
+  padding: 0 5px; /* Устанавливает отступы метки слева и справа для позиционирования над полем. */
+  pointer-events: none; /* Отключает события наведения и кликов на метке, чтобы они не блокировали доступ к полю. */
+  transform-origin: left center; /* Устанавливает точку трансформации в левый центр, чтобы метка перемещалась относительно этого положения. */
+  transition: all 0.1s ease-in-out; /* Добавляет анимацию для плавного перемещения метки при вводе текста. */
+  height: auto;
+  line-height: 17px;
+  top: 7px;
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-control:focus ~ label {
+  background-color: white; /* Устанавливает прозрачный фон для метки, когда поле заполнено или в фокусе. */
+  font-size: 0.85rem; /* Уменьшает размер шрифта метки при её перемещении вверх. */
+  transform: translateY(-1.05rem) scale(0.8); /* Поднимает и уменьшает метку над полем, если оно в фокусе или заполнено. */
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label:after {
+  border-radius: 0 !important; /* Обнуляет скругление границ для дополнительных стилей, если они есть. */
+}
+
+.form-floating > .form-control:not(:placeholder-shown) {
+  padding-top: 20px;
+  padding-bottom: 17px;
+}
+
+.form-floating > .form-control {
+  height: 0; /* Устанавливает минимальную высоту поля в 10 пикселей, чтобы обеспечить видимость. */
+  min-height: 0; /* Устанавливает минимальную высоту для поддержания высоты 10 пикселей. */
+  line-height: 0; /* Устанавливает межстрочный интервал в 10 пикселей, что помогает уменьшить высоту поля. */
+}

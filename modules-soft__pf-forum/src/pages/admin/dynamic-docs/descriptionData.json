@@ -1,0 +1,46 @@
+[
+  {
+    "props": [
+      {
+        "name": "items",
+        "info": "Элементы для отображения"
+      },
+      {
+        "name": "headers",
+        "info": "Номенклатуры"
+      },
+      {
+        "name": "excluded",
+        "info": "Таблица Заголовков"
+      }
+    ],
+    "methods": [
+      {
+        "name": "isExpanded",
+        "info": "Элементы для отображения"
+      },
+      {
+        "name": "noms",
+        "info": "Номенклатуры"
+      },
+      {
+        "name": "tableFields",
+        "info": "Таблица Заголовков"
+      }
+    ],
+    "emits": [
+      {
+        "name": "row-click",
+        "info": "Элементы для отображения"
+      },
+      {
+        "name": "page-change",
+        "info": "Номенклатуры"
+      },
+      {
+        "name": "sort-change",
+        "info": "Таблица Заголовков"
+      }
+    ]
+  }
+]

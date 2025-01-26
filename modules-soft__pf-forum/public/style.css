@@ -1,0 +1,18 @@
+.action-btn {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  opacity: 1;
+}
+/*.v3dp__clearable {*/
+/*    color: crimson !important;*/
+/*    font-style: normal !important;*/
+/*    display: inline !important;*/
+/*    position: absolute !important;*/
+/*    top: 7px !important;*/
+/*    right: 10px !important;*/
+/*    left: 190px !important;*/
+/*    cursor: pointer !important;*/
+/*}*/
