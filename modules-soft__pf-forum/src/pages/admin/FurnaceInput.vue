@@ -59,11 +59,9 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { useFurnaceStore } from "./furnaceStore";
 
-const props = defineProps({
-  furnace: Object,
-});
+const { furnace } = useFurnaceStore();
 
 const dimensionLabels = {
   length: "м",
