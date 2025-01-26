@@ -4,9 +4,9 @@ import { reactive, computed, watch } from "vue";
 export const useFurnaceStore = defineStore("furnace", () => {
   const furnace = reactive({
     dimensions: {
-      length: 71.0, // Длина печи
-      height: 121.0, // Высота печи
-      resistance: 0.300, // Сопротивление материала
+      length: 71.0,
+      height: 121.0,
+      resistance: 0.300,
     },
     electrodes: [
       { U: -24.0, V: 70.0, radius: 0.25, length: 5.0 },
@@ -23,19 +23,13 @@ export const useFurnaceStore = defineStore("furnace", () => {
     },
     results: {
       voltage: {
-        U0: 0, // Рассчитываемое результирующее напряжение
+        U0: 0,
       },
     },
   });
 
   const solution = computed(() => {
-    // 1. Рассчёт общего объёма электродов
-    const electrodeVolume = furnace.electrodes.reduce(
-      (total, electrode) => total + Math.PI * electrode.radius ** 2 * electrode.length,
-      0
-    );
-
-    // 2. Рассчёт расстояний между электродами
+    // Рассчёт расстояний между электродами
     const distances = [];
     for (let i = 0; i < furnace.electrodes.length; i++) {
       for (let j = i + 1; j < furnace.electrodes.length; j++) {
@@ -45,47 +39,36 @@ export const useFurnaceStore = defineStore("furnace", () => {
         distances.push(distance);
       }
     }
-    const averageDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length || 1; // Среднее расстояние
 
-    // 3. Рассчёт общего сопротивления (с учетом среднего расстояния)
-    const totalResistance = furnace.dimensions.resistance * electrodeVolume * averageDistance;
+    const averageDistance = distances.length > 0
+      ? distances.reduce((sum, d) => sum + d, 0) / distances.length
+      : 0;
 
-    // 4. Рассчёт силы тока
-    const current = furnace.electricParams.initialPower / furnace.electricParams.initialVoltage;
-
-    // 5. Рассчёт результирующего напряжения
-    const U0 = current * totalResistance;
-
-    // 6. Рассчёт суммарной мощности
-    const totalPower = furnace.electrodes.reduce((power, electrode) => {
-      const voltageDrop = U0 / furnace.electrodes.length; // Условное распределение напряжения
-      const electrodeCurrent = voltageDrop / furnace.dimensions.resistance; // Сила тока через электрод
-      return power + voltageDrop * electrodeCurrent;
-    }, 0);
-
+    // Вернуть результат
     return {
-      electrodeVolume: electrodeVolume.toFixed(6),
-      totalPower: totalPower.toFixed(1),
-      U0: U0.toFixed(2),
+      distances: distances.map((d) => d.toFixed(2)), // Если массив пуст, это будет []
       averageDistance: averageDistance.toFixed(2),
+      // Остальные расчёты
+      electrodeVolume: '0.000000',
+      totalPower: '0.0',
+      U0: '0.00',
     };
   });
 
-  // Отслеживание изменений в массиве `electrodes` и других параметрах
+
+  // Отслеживание изменений
   watch(
-    furnace, // Отслеживаем весь объект
+    () => furnace.electrodes.map((e) => ({ ...e })), // Глубокое отслеживание
     () => {
-      furnace.results.voltage.U0 = parseFloat(solution.value.U0);
+      console.log("Электроды изменены, пересчет...");
     },
-    { deep: true } // Глубокое отслеживание всех вложенных объектов
+    { deep: true }
   );
 
-  // Функция добавления электрода
   const addElectrode = () => {
     furnace.electrodes.push({ U: 0, V: 0, radius: 0.1, length: 1.0 });
   };
 
-  // Функция удаления электрода
   const removeElectrode = (index) => {
     furnace.electrodes.splice(index, 1);
   };

@@ -14,6 +14,10 @@
         <td>{{ solution.electrodeVolume }} м³</td>
       </tr>
       <tr>
+        <td><strong>Среднее расстояние между электродами (d):</strong></td>
+        <td>{{ solution.averageDistance }} м</td>
+      </tr>
+      <tr>
         <td><strong>Суммарная мощность (P):</strong></td>
         <td>{{ solution.totalPower }} Вт</td>
       </tr>
@@ -32,17 +36,24 @@
 V = Σ(π × r² × h)
 где r - радиус электрода, h - длина электрода.
 </pre>
-        <span><strong>Текущие данные:</strong> {{ furnace.electrodes.map(e => `r=${e.radius}, h=${e.length}`).join('; ')
-          }}</span>
+        <span><strong>Текущие данные:</strong> {{ furnace.electrodes.map(e => `r=${e.radius}, h=${e.length}`).join('; ') }}</span>
+      </li>
+      <li>
+        <strong>Расстояние между электродами:</strong>
+        <pre>
+d_{ij} = √((U_i - U_j)² + (V_i - V_j)²)
+Среднее расстояние:
+d_{среднее} = Σ(d_{ij}) / Количество пар
+</pre>
+        <span><strong>Текущие данные:</strong> {{ solution.distances.join(', ') }}</span>
       </li>
       <li>
         <strong>Сопротивление:</strong>
         <pre>
-R = ρ × V
-где ρ - сопротивление материала, V - объем электродов.
+R = ρ × V × d_{среднее}
+где ρ - сопротивление материала, V - объем электродов, d_{среднее} - среднее расстояние.
 </pre>
-        <span><strong>Текущие данные:</strong> ρ={{ furnace.dimensions.resistance }}, V={{ solution.electrodeVolume
-          }}</span>
+        <span><strong>Текущие данные:</strong> ρ={{ furnace.dimensions.resistance }}, V={{ solution.electrodeVolume }}, d={{ solution.averageDistance }}</span>
       </li>
       <li>
         <strong>Сила тока:</strong>
@@ -50,8 +61,7 @@ R = ρ × V
 I = P / U
 где P - мощность, U - начальное напряжение.
 </pre>
-        <span><strong>Текущие данные:</strong> P={{ furnace.electricParams.initialPower
-          }}, U={{ furnace.electricParams.initialVoltage }}</span>
+        <span><strong>Текущие данные:</strong> P={{ furnace.electricParams.initialPower }}, U={{ furnace.electricParams.initialVoltage }}</span>
       </li>
       <li>
         <strong>Результирующее напряжение:</strong>
@@ -59,8 +69,7 @@ I = P / U
 U₀ = I × R
 где I - сила тока, R - сопротивление.
 </pre>
-        <span><strong>Текущие данные:</strong> I={{ (furnace.electricParams.initialPower / furnace.electricParams.initialVoltage).toFixed(2)
-          }}, R={{ (furnace.dimensions.resistance * solution.electrodeVolume).toFixed(6) }}</span>
+        <span><strong>Текущие данные:</strong> I={{ (furnace.electricParams.initialPower / furnace.electricParams.initialVoltage).toFixed(2) }}, R={{ (furnace.dimensions.resistance * solution.electrodeVolume * solution.averageDistance).toFixed(6) }}</span>
       </li>
       <li>
         <strong>Суммарная мощность:</strong>
