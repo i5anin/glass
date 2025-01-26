@@ -8,12 +8,14 @@ export const useFurnaceStore = defineStore("furnace", () => {
       height: 121.0,
       resistance: 0.300,
     },
-    electrodes: {
-      U: [-24.0, -8.0, 8.0, 24.0, -20.0, 20.0, -20.0, -10.0, -20.0, 20.0, 10.0, 20.0],
-      V: [70.0, 70.0, 70.0, 70.0, 116.0, 116.0, 35.0, 22.5, 10.0, 35.0, 22.5, 10.0],
-      radii: [0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25],
-      lengths: [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
-    },
+    electrodes: [
+      { U: -24.0, V: 70.0, radius: 0.25, length: 5.0 },
+      { U: -8.0, V: 70.0, radius: 0.25, length: 5.0 },
+      { U: 8.0, V: 70.0, radius: 0.25, length: 5.0 },
+      { U: 24.0, V: 70.0, radius: 0.25, length: 5.0 },
+      { U: -20.0, V: 116.0, radius: 0.25, length: 5.0 },
+      { U: 20.0, V: 116.0, radius: 0.25, length: 5.0 },
+    ],
     electricParams: {
       groups: 7,
       initialVoltage: 100.0,
@@ -34,9 +36,10 @@ export const useFurnaceStore = defineStore("furnace", () => {
   });
 
   const solution = computed(() => {
-    const r = furnace.electrodes.radii[0];
-    const l = furnace.electrodes.lengths[0];
-    const electrodeVolume = Math.PI * r ** 2 * l;
+    const electrodeVolume = furnace.electrodes.reduce(
+      (total, electrode) => total + Math.PI * electrode.radius ** 2 * electrode.length,
+      0
+    );
 
     const P1 = furnace.results.voltage.U12[0] * furnace.results.current.I1[0];
     const P2 = furnace.results.voltage.U12[1] * furnace.results.current.I2[1];
