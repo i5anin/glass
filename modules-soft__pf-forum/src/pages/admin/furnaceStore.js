@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { reactive, computed } from "vue";
+import { reactive, computed, watch } from "vue";
 
 export const useFurnaceStore = defineStore("furnace", () => {
   const furnace = reactive({
     dimensions: {
-      length: 71.0,
-      height: 121.0,
-      resistance: 0.300,
+      length: 71.0, // Длина печи
+      height: 121.0, // Высота печи
+      resistance: 0.300, // Сопротивление материала
     },
     electrodes: [
       { U: -24.0, V: 70.0, radius: 0.25, length: 5.0 },
@@ -23,37 +23,61 @@ export const useFurnaceStore = defineStore("furnace", () => {
     },
     results: {
       voltage: {
-        U0: 91.828060,
-        U12: [-45.9, -79.5],
-        U23: [-45.9, 79.5],
+        U0: 0, // Рассчитываемое результирующее напряжение
+        U12: [],
+        U23: [],
       },
       current: {
-        I1: [-814.0, 0.0, 814.0],
-        I2: [-472.0, 944.0, -472.0],
-        I3: [941.0, 944.0, 941.0],
+        I1: [],
+        I2: [],
+        I3: [],
       },
     },
   });
 
   const solution = computed(() => {
+    // Рассчёт общего объёма электродов
     const electrodeVolume = furnace.electrodes.reduce(
       (total, electrode) => total + Math.PI * electrode.radius ** 2 * electrode.length,
       0
     );
 
-    const P1 = furnace.results.voltage.U12[0] * furnace.results.current.I1[0];
-    const P2 = furnace.results.voltage.U12[1] * furnace.results.current.I2[1];
-    const P3 = furnace.results.voltage.U23[1] * furnace.results.current.I3[2];
-    const totalPower = P1 + P2 + P3;
+    // Расчёт напряжения
+    const totalResistance = furnace.dimensions.resistance * electrodeVolume;
+    const current = furnace.electricParams.initialPower / furnace.electricParams.initialVoltage;
+    const U0 = current * totalResistance;
+
+    // Расчёт суммарной мощности
+    const totalPower = furnace.electrodes.reduce((power, electrode) => {
+      const voltageDrop = U0 / furnace.electrodes.length; // Условное распределение напряжения
+      const electrodeCurrent = voltageDrop / furnace.dimensions.resistance; // Сила тока через электрод
+      return power + voltageDrop * electrodeCurrent;
+    }, 0);
 
     return {
       electrodeVolume: electrodeVolume.toFixed(6),
       totalPower: totalPower.toFixed(1),
+      U0: U0.toFixed(2),
     };
   });
+
+  // Отслеживание изменений в массиве `electrodes`
+  watch(
+    () => furnace.electrodes.map((e) => ({ ...e })), // Глубокая реактивность массива
+    () => {
+      furnace.results.voltage.U0 = parseFloat(solution.value.U0);
+    },
+    { immediate: true, deep: true }
+  );
+
+  // Функция добавления электрода
+  const addElectrode = (electrode) => {
+    furnace.electrodes.push(electrode);
+  };
 
   return {
     furnace,
     solution,
+    addElectrode,
   };
 });

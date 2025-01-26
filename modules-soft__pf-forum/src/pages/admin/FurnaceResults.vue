@@ -19,7 +19,7 @@
       </tr>
       <tr>
         <td><strong>Результирующее напряжение:</strong></td>
-        <td>{{ furnace.results.voltage.U0 }} В</td>
+        <td>{{ solution.U0 }} В</td>
       </tr>
       </tbody>
     </table>
