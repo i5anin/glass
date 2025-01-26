@@ -1,9 +1,9 @@
 <template>
   <div class="w-75">
-    <svg width="100%" height="400" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+    <svg width="100%" height="400" viewBox="0 0 200 250" preserveAspectRatio="xMidYMid meet">
       <!-- Координатная сетка -->
-      <line x1="0" y1="100" x2="200" y2="100" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось X -->
-      <line x1="100" y1="0" x2="100" y2="200" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось Y -->
+      <line x1="0" y1="125" x2="200" y2="125" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось X -->
+      <line x1="100" y1="0" x2="100" y2="250" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось Y -->
 
       <!-- Электроды -->
       <circle
@@ -27,7 +27,7 @@
       </text>
 
       <!-- Подписи координатной системы -->
-      <text x="190" y="95" font-size="10" fill="black">X</text>
+      <text x="190" y="130" font-size="10" fill="black">X</text>
       <text x="105" y="10" font-size="10" fill="black">Y</text>
     </svg>
   </div>
@@ -41,5 +41,5 @@ const { furnace } = useFurnaceStore();
 
 // Функции масштабирования
 const scaleX = (x) => x * 2 + 100; // Масштабируем и добавляем смещение
-const scaleY = (y) => 200 - y * 2; // Масштабируем и инвертируем ось Y
+const scaleY = (y) => 250 - y * 2; // Масштабируем и инвертируем ось Y
 </script>
