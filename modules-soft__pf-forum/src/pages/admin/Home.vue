@@ -25,7 +25,8 @@
                 <span>м</span>
               </div>
               <div class="d-flex gap-2">
-                <input v-model.number="furnace.dimensions.resistance" type="number" class="form-control form-control-sm" step="0.001" />
+                <input v-model.number="furnace.dimensions.resistance" type="number" class="form-control form-control-sm"
+                       step="0.001" />
                 <span>Ом·м</span>
               </div>
             </td>
@@ -35,7 +36,8 @@
           <tr>
             <td>Координаты электродов</td>
             <td>
-              <div v-for="(electrode, index) in furnace.electrodes" :key="'coord-' + index" class="d-flex gap-2 align-items-center">
+              <div v-for="(electrode, index) in furnace.electrodes" :key="'coord-' + index"
+                   class="d-flex gap-2 align-items-center">
                 <span>{{ index + 1 }}</span>
                 <input v-model.number="electrode.U" type="number" class="form-control form-control-sm" />
                 <span>м</span>
@@ -47,12 +49,13 @@
             </td>
           </tr>
 
-          <!-- Радиусы и длины (все на одной строке) -->
+          <!-- Радиусы и длины -->
           <tr>
             <td>Радиусы и длины</td>
             <td>
               <div class="d-flex gap-2">
-                <div v-for="(electrode, index) in furnace.electrodes" :key="'electrode-dim-' + index" class="d-flex gap-2">
+                <div v-for="(electrode, index) in furnace.electrodes" :key="'electrode-dim-' + index"
+                     class="d-flex gap-2">
                   <input v-model.number="electrode.radii" type="number" class="form-control form-control-sm" />
                   <span>м</span>
                   <input v-model.number="electrode.lengths" type="number" class="form-control form-control-sm" />
@@ -67,14 +70,17 @@
             <td>Электрические параметры</td>
             <td>
               <div class="d-flex gap-2">
-                <input v-model.number="furnace.electricParams.groups" type="number" class="form-control form-control-sm" />
+                <input v-model.number="furnace.electricParams.groups" type="number"
+                       class="form-control form-control-sm" />
               </div>
               <div class="d-flex gap-2">
-                <input v-model.number="furnace.electricParams.initialVoltage" type="number" class="form-control form-control-sm" step="0.1" />
+                <input v-model.number="furnace.electricParams.initialVoltage" type="number"
+                       class="form-control form-control-sm" step="0.1" />
                 <span>В</span>
               </div>
               <div class="d-flex gap-2">
-                <input v-model.number="furnace.electricParams.initialPower" type="number" class="form-control form-control-sm" />
+                <input v-model.number="furnace.electricParams.initialPower" type="number"
+                       class="form-control form-control-sm" />
                 <span>Вт</span>
               </div>
             </td>
@@ -89,8 +95,8 @@
           <circle v-for="(electrode, index) in furnace.electrodes"
                   :key="'electrode-circle-' + index"
                   :cx="electrode.U * 3 + 150"
-          :cy="electrode.V * 2 + 150"
-          r="5" fill="blue" />
+                  :cy="electrode.V * 2 + 150"
+                  r="5" fill="blue" />
           <text x="10" y="10" font-size="16" fill="black">Расположение электродов</text>
         </svg>
       </div>
@@ -123,7 +129,7 @@
 </template>
 
 <script setup>
-import { reactive, computed } from "vue";
+import { reactive, computed } from 'vue'
 
 const furnace = reactive({
   dimensions: {
@@ -162,37 +168,42 @@ const furnace = reactive({
       I3: [941.0, 944.0, 941.0],
     },
   },
-});
+})
 
 const solution = computed(() => {
-  const r = furnace.electrodes[0].radii;
-  const l = furnace.electrodes[0].lengths;
-  const electrodeVolume = Math.PI * r ** 2 * l;
+  const r = furnace.electrodes[0].radii
+  const l = furnace.electrodes[0].lengths
+  const electrodeVolume = Math.PI * r ** 2 * l
 
-  const P1 = -45.9 * -814;
-  const P2 = -45.9 * 944;
-  const P3 = -79.5 * 941;
-  const totalPower = P1 + P2 + P3;
+  const P1 = -45.9 * -814
+  const P2 = -45.9 * 944
+  const P3 = -79.5 * 941
+  const totalPower = P1 + P2 + P3
 
   return {
     electrodeVolume: electrodeVolume.toFixed(6),
     totalPower: totalPower.toFixed(1),
-  };
-});
+  }
+})
 
 const addElectrode = () => {
-  furnace.electrodes.push({ U: 0, V: 0, radii: 0.25, lengths: 5.0 });
-};
+  furnace.electrodes.push({ U: 0, V: 0, radii: 0.25, lengths: 5.0 })
+}
 
 const removeElectrode = (index) => {
   if (furnace.electrodes.length > 1) {
-    furnace.electrodes.splice(index, 1);
+    furnace.electrodes.splice(index, 1)
   }
-};
+}
 </script>
 
 <style scoped>
 .table td, .table th {
   vertical-align: middle;
+}
+
+.table-responsive {
+  max-height: 500px; /* Ограничиваем высоту таблицы */
+  overflow-y: auto; /* Добавляем вертикальную прокрутку */
 }
 </style>
