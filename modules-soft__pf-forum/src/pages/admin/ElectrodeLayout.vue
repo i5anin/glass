@@ -5,6 +5,17 @@
       <line x1="0" y1="125" x2="200" y2="125" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось X -->
       <line x1="100" y1="0" x2="100" y2="250" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось Y -->
 
+      <!-- Печь -->
+      <rect
+        :x="scaleX(-furnace.dimensions.length / 2)"
+        :y="scaleY(furnace.dimensions.height)"
+        :width="furnace.dimensions.length * 2"
+        :height="furnace.dimensions.height * 2"
+        fill="rgba(255, 165, 0, 0.3)"
+        stroke="orange"
+        stroke-width="1"
+      />
+
       <!-- Электроды -->
       <circle
         v-for="(electrode, index) in furnace.electrodes"
