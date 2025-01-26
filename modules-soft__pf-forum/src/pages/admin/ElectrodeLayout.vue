@@ -1,6 +1,6 @@
 <template>
   <div class="w-75">
-    <svg width="100%" height="300" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+    <svg width="100%" height="400" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
       <!-- Координатная сетка -->
       <line x1="0" y1="100" x2="200" y2="100" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось X -->
       <line x1="100" y1="0" x2="100" y2="200" stroke="gray" stroke-dasharray="5,5" /> <!-- Ось Y -->
@@ -20,15 +20,15 @@
         :key="'label-' + index"
         :x="scaleX(electrode.U) + 5"
         :y="scaleY(electrode.V) - 5"
-        font-size="6"
+        font-size="5"
         fill="black"
       >
         {{ index + 1 }} ({{ electrode.U }}, {{ electrode.V }})
       </text>
 
       <!-- Подписи координатной системы -->
-      <text x="190" y="105" font-size="12" fill="black">X</text>
-      <text x="105" y="10" font-size="12" fill="black">Y</text>
+      <text x="190" y="95" font-size="10" fill="black">X</text>
+      <text x="105" y="10" font-size="10" fill="black">Y</text>
     </svg>
   </div>
 </template>
