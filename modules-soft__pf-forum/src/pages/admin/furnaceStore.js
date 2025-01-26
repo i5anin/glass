@@ -24,30 +24,27 @@ export const useFurnaceStore = defineStore("furnace", () => {
     results: {
       voltage: {
         U0: 0, // Рассчитываемое результирующее напряжение
-        U12: [],
-        U23: [],
-      },
-      current: {
-        I1: [],
-        I2: [],
-        I3: [],
       },
     },
   });
 
   const solution = computed(() => {
-    // Рассчёт общего объёма электродов
+    // 1. Рассчёт общего объёма электродов
     const electrodeVolume = furnace.electrodes.reduce(
       (total, electrode) => total + Math.PI * electrode.radius ** 2 * electrode.length,
       0
     );
 
-    // Расчёт напряжения
+    // 2. Рассчёт общего сопротивления
     const totalResistance = furnace.dimensions.resistance * electrodeVolume;
+
+    // 3. Рассчёт силы тока
     const current = furnace.electricParams.initialPower / furnace.electricParams.initialVoltage;
+
+    // 4. Рассчёт результирующего напряжения
     const U0 = current * totalResistance;
 
-    // Расчёт суммарной мощности
+    // 5. Рассчёт суммарной мощности
     const totalPower = furnace.electrodes.reduce((power, electrode) => {
       const voltageDrop = U0 / furnace.electrodes.length; // Условное распределение напряжения
       const electrodeCurrent = voltageDrop / furnace.dimensions.resistance; // Сила тока через электрод
@@ -61,9 +58,9 @@ export const useFurnaceStore = defineStore("furnace", () => {
     };
   });
 
-  // Отслеживание изменений в массиве `electrodes`
+  // Отслеживание изменений в массиве `electrodes` и пересчёт результатов
   watch(
-    () => furnace.electrodes.map((e) => ({ ...e })), // Глубокая реактивность массива
+    () => furnace.electrodes.map((e) => ({ ...e })), // Глубокое наблюдение
     () => {
       furnace.results.voltage.U0 = parseFloat(solution.value.U0);
     },
@@ -71,13 +68,19 @@ export const useFurnaceStore = defineStore("furnace", () => {
   );
 
   // Функция добавления электрода
-  const addElectrode = (electrode) => {
-    furnace.electrodes.push(electrode);
+  const addElectrode = () => {
+    furnace.electrodes.push({ U: 0, V: 0, radius: 0.1, length: 1.0 });
+  };
+
+  // Функция удаления электрода
+  const removeElectrode = (index) => {
+    furnace.electrodes.splice(index, 1);
   };
 
   return {
     furnace,
     solution,
     addElectrode,
+    removeElectrode,
   };
 });
