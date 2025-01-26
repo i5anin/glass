@@ -18,28 +18,28 @@
           <td>{{ index + 1 }}</td>
           <td>
             <input
-              v-model.number="electrode.U"
+              v-model.number="furnace.electrodes[index].U"
               type="number"
               class="form-control form-control-sm"
             />
           </td>
           <td>
             <input
-              v-model.number="electrode.V"
+              v-model.number="furnace.electrodes[index].V"
               type="number"
               class="form-control form-control-sm"
             />
           </td>
           <td>
             <input
-              v-model.number="electrode.radius"
+              v-model.number="furnace.electrodes[index].radius"
               type="number"
               class="form-control form-control-sm"
             />
           </td>
           <td>
             <input
-              v-model.number="electrode.length"
+              v-model.number="furnace.electrodes[index].length"
               type="number"
               class="form-control form-control-sm"
             />
@@ -53,6 +53,7 @@
         </tbody>
       </table>
     </div>
+    <pre>{{furnace.electrodes}} </pre>
     <button @click="addElectrode" class="btn btn-sm btn-primary mt-2">Добавить электрод</button>
   </div>
 </template>
@@ -60,15 +61,8 @@
 <script setup>
 import { useFurnaceStore } from "./furnaceStore";
 
-const { furnace } = useFurnaceStore();
-
-const addElectrode = () => {
-  furnace.electrodes.push({ U: 0, V: 0, radius: 0.1, length: 1.0 });
-};
-
-const removeElectrode = (index) => {
-  furnace.electrodes.splice(index, 1);
-};
+// Используем стор
+const { furnace, addElectrode, removeElectrode } = useFurnaceStore();
 </script>
 
 <style scoped>
