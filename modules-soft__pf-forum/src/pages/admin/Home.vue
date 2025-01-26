@@ -16,14 +16,17 @@
           <tr>
             <td>Размеры печи</td>
             <td>
-              <div>
-                <input v-model.number="furnace.dimensions.length" type="number" class="form-control form-control-sm" /> м
+              <div class="d-flex gap-2">
+                <input v-model.number="furnace.dimensions.length" type="number" class="form-control form-control-sm" />
+                <span>м</span>
               </div>
-              <div>
-                <input v-model.number="furnace.dimensions.height" type="number" class="form-control form-control-sm" /> м
+              <div class="d-flex gap-2">
+                <input v-model.number="furnace.dimensions.height" type="number" class="form-control form-control-sm" />
+                <span>м</span>
               </div>
-              <div>
-                <input v-model.number="furnace.dimensions.resistance" type="number" class="form-control form-control-sm" step="0.001" /> Ом·м
+              <div class="d-flex gap-2">
+                <input v-model.number="furnace.dimensions.resistance" type="number" class="form-control form-control-sm" step="0.001" />
+                <span>Ом·м</span>
               </div>
             </td>
           </tr>
@@ -31,8 +34,10 @@
             <td>Координаты электродов</td>
             <td>
               <div v-for="(value, index) in furnace.electrodes.U" :key="'coord-' + index" class="d-flex gap-2">
-                <input v-model.number="furnace.electrodes.U[index]" type="number" class="form-control form-control-sm" /> м
-                <input v-model.number="furnace.electrodes.V[index]" type="number" class="form-control form-control-sm" /> м
+                <input v-model.number="furnace.electrodes.U[index]" type="number" class="form-control form-control-sm" />
+                <span>м</span>
+                <input v-model.number="furnace.electrodes.V[index]" type="number" class="form-control form-control-sm" />
+                <span>м</span>
               </div>
             </td>
           </tr>
@@ -40,22 +45,26 @@
             <td>Радиусы и длины</td>
             <td>
               <div v-for="(value, index) in furnace.electrodes.radii" :key="'radius-' + index" class="d-flex gap-2">
-                <input v-model.number="furnace.electrodes.radii[index]" type="number" class="form-control form-control-sm" /> м
-                <input v-model.number="furnace.electrodes.lengths[index]" type="number" class="form-control form-control-sm" /> м
+                <input v-model.number="furnace.electrodes.radii[index]" type="number" class="form-control form-control-sm" />
+                <span>м</span>
+                <input v-model.number="furnace.electrodes.lengths[index]" type="number" class="form-control form-control-sm" />
+                <span>м</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>Электрические параметры</td>
             <td>
-              <div>
+              <div class="d-flex gap-2">
                 <input v-model.number="furnace.electricParams.groups" type="number" class="form-control form-control-sm" />
               </div>
-              <div>
-                <input v-model.number="furnace.electricParams.initialVoltage" type="number" class="form-control form-control-sm" step="0.1" /> В
+              <div class="d-flex gap-2">
+                <input v-model.number="furnace.electricParams.initialVoltage" type="number" class="form-control form-control-sm" step="0.1" />
+                <span>В</span>
               </div>
-              <div>
-                <input v-model.number="furnace.electricParams.initialPower" type="number" class="form-control form-control-sm" /> Вт
+              <div class="d-flex gap-2">
+                <input v-model.number="furnace.electricParams.initialPower" type="number" class="form-control form-control-sm" />
+                <span>Вт</span>
               </div>
             </td>
           </tr>
@@ -65,7 +74,7 @@
 
       <!-- Рисование расположения электродов -->
       <div class="w-50">
-        <svg width="100%" height="300">
+        <svg width="70%" height="300">
           <circle v-for="(value, index) in furnace.electrodes.U"
                   :key="'electrode-' + index"
                   :cx="furnace.electrodes.U[index] + 150"
