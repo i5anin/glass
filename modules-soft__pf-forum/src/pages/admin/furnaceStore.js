@@ -35,16 +35,28 @@ export const useFurnaceStore = defineStore("furnace", () => {
       0
     );
 
-    // 2. Рассчёт общего сопротивления
-    const totalResistance = furnace.dimensions.resistance * electrodeVolume;
+    // 2. Рассчёт расстояний между электродами
+    const distances = [];
+    for (let i = 0; i < furnace.electrodes.length; i++) {
+      for (let j = i + 1; j < furnace.electrodes.length; j++) {
+        const dx = furnace.electrodes[i].U - furnace.electrodes[j].U;
+        const dy = furnace.electrodes[i].V - furnace.electrodes[j].V;
+        const distance = Math.sqrt(dx ** 2 + dy ** 2);
+        distances.push(distance);
+      }
+    }
+    const averageDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length || 1; // Среднее расстояние
 
-    // 3. Рассчёт силы тока
+    // 3. Рассчёт общего сопротивления (с учетом среднего расстояния)
+    const totalResistance = furnace.dimensions.resistance * electrodeVolume * averageDistance;
+
+    // 4. Рассчёт силы тока
     const current = furnace.electricParams.initialPower / furnace.electricParams.initialVoltage;
 
-    // 4. Рассчёт результирующего напряжения
+    // 5. Рассчёт результирующего напряжения
     const U0 = current * totalResistance;
 
-    // 5. Рассчёт суммарной мощности
+    // 6. Рассчёт суммарной мощности
     const totalPower = furnace.electrodes.reduce((power, electrode) => {
       const voltageDrop = U0 / furnace.electrodes.length; // Условное распределение напряжения
       const electrodeCurrent = voltageDrop / furnace.dimensions.resistance; // Сила тока через электрод
@@ -55,6 +67,7 @@ export const useFurnaceStore = defineStore("furnace", () => {
       electrodeVolume: electrodeVolume.toFixed(6),
       totalPower: totalPower.toFixed(1),
       U0: U0.toFixed(2),
+      averageDistance: averageDistance.toFixed(2),
     };
   });
 
